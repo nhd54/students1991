@@ -2,7 +2,8 @@
 
 window.addEventListener("DOMContentLoaded", init);
 
-const students = [];
+const allStudents = [];
+let currentStudents = [];
 
 const Student_prototype = {
     firstName: "",
@@ -86,7 +87,7 @@ function filterByHouse( house ) {
 
 function init() {
     // clear the students array - just in case
-    students.splice(0, students.length); // from https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+    allStudents.splice(0, allStudents.length); // from https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
     
     // fetch JSON 
     fetchData();
@@ -105,9 +106,11 @@ function fetchData() {
     .then(function(jsondata) {
         console.log(jsondata);
 
-        buildList(jsondata);
+        buildList(jsondata); // creates allStudents
+
+        currentStudents = allStudents;
         
-        displayList(students);
+        displayList(currentStudents);
     });
 }
 
@@ -132,14 +135,14 @@ function buildList(jsondata) {
             student.splitName(fullName);
             //student.setHouse(house);
             student.house = house;
-            students.push(student);
+            allStudents.push(student);
         }
     }
 }
 
 
 function sortByFirstName() {
-    students.sort( byFirstName );
+    currentStudents.sort( byFirstName );
 
     function byFirstName(a,b) {
         if( a.firstName < b.firstName ) {
@@ -153,7 +156,7 @@ function sortByFirstName() {
 }
 
 function sortByLastName() {
-    students.sort( byLastName );
+    currentStudents.sort( byLastName );
 
     function byLastName(a,b) {
         if( a.lastName < b.lastName ) {
@@ -167,7 +170,7 @@ function sortByLastName() {
 
 
 function sortByHouse() {
-    students.sort( byHouseAndFirstName );
+    currentStudents.sort( byHouseAndFirstName );
 
     function byHouseAndFirstName(a,b) {
         // first sort by house, but if house is the same, sort by first name
@@ -186,7 +189,7 @@ function sortByHouse() {
 }
 
 function filterByHouse( house ) {
-    const filteredStudents = students.filter( byHouse );
+    const filteredStudents = allStudents.filter( byHouse );
 
     function byHouse( student ) {
         if( student.house === house ) {
@@ -202,7 +205,7 @@ function filterByHouse( house ) {
 function listOfStudents() {
     let str = "";
 
-    students.forEach( student => str+=student+"\n" );
+    allStudents.forEach( student => str+=student+"\n" );
 
     return str;
 }
